@@ -12,4 +12,4 @@ class User(SQLModel, table=True):
     username: str = Field(unique=True, index=True)
     hashed_password: bytes = Field(exclude=True)
 
-    balance: float = Field(default=0)
+    balance: float = Field(default=100)
