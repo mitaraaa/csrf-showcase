@@ -3,10 +3,12 @@ import {
   AlertDialog,
   Button,
   Flex,
+  SegmentedControl,
   Spinner,
+  Text,
   TextField,
 } from "@radix-ui/themes";
-import { CircleCheck, CircleX, Euro, Text, UserRound } from "lucide-react";
+import { CircleCheck, CircleX, Euro, TextIcon, UserRound } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDebouncedCallback } from "use-debounce";
@@ -34,6 +36,8 @@ const Transfer = () => {
   const [checking, setChecking] = useState(false);
 
   const [loading, setLoading] = useState(false);
+
+  const [method, setMethod] = useState<string>("unsafe");
 
   const watchAmount = watch("amount");
   const watchRecipient = watch("recipient");
@@ -63,11 +67,18 @@ const Transfer = () => {
   const onSubmit = async (data: Inputs) => {
     setLoading(true);
 
-    const response = await transactionService.transfer(
-      data.amount,
-      data.recipient,
-      data.description
-    );
+    const response =
+      method === "unsafe"
+        ? await transactionService.transferUnsafe(
+            data.amount,
+            data.recipient,
+            data.description
+          )
+        : await transactionService.transferNaive(
+            data.amount,
+            data.recipient,
+            data.description
+          );
 
     const user = await userService.getMe();
 
@@ -114,6 +125,22 @@ const Transfer = () => {
             onSubmit={handleSubmit(onSubmit)}
             autoComplete="off"
           >
+            <SegmentedControl.Root
+              value={method}
+              onValueChange={setMethod}
+              size="1"
+            >
+              <SegmentedControl.Item value="unsafe">
+                Unsafe
+              </SegmentedControl.Item>
+              <SegmentedControl.Item value="naive">Naive</SegmentedControl.Item>
+            </SegmentedControl.Root>
+            <Text as="p" size="1" className="text-xs opacity-70">
+              "Unsafe" method is vulnerable to CSRF attacks. Use "Naive" method
+              to protect against CSRF attacks. Please note that "Naive" method
+              is still vulnerable to MITM attacks.
+            </Text>
+
             <Form.Field name="amount">
               <Form.Label className="text-sm opacity-90">
                 <span className="text-red-300 mr-1">*</span>
@@ -195,7 +222,7 @@ const Transfer = () => {
                   {...register("description")}
                 >
                   <TextField.Slot>
-                    <Text size={16} />
+                    <TextIcon size={16} />
                   </TextField.Slot>
                 </TextField.Root>
               </Form.Control>

@@ -101,6 +101,10 @@ To prevent CSRF attacks, you can implement the following countermeasures:
 
 - Synchronizer Token Pattern: Include a unique token in each form submission that is validated on the server-side to prevent CSRF attacks.
 
+- Naive Double-Submit Cookie: Include a CSRF token in a cookie and a hidden form field. The server can verify that the cookie and form field values match to prevent CSRF attacks. (Discouraged due to potential [MITM/subdomain](https://owasp.org/www-chapter-london/assets/slides/David_Johansson-Double_Defeat_of_Double-Submit_Cookie.pdf) attacks)
+
+  You can try it out by using the `/transfer/naive` endpoint.
+
 - Signed Double-Submit Cookie: Include a signed cookie with each form submission that contains a unique value. The server can verify the cookie to prevent CSRF attacks.
 
 - SameSite Cookies: Set the `SameSite` attribute on cookies to `Strict` or `Lax` to prevent CSRF attacks.

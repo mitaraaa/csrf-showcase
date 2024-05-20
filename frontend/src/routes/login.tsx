@@ -44,7 +44,6 @@ const Login = () => {
 
       setUser(user);
     } catch (error) {
-      console.error(error);
       setLoading(false);
     }
   };

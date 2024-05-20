@@ -16,3 +16,6 @@ cert.pem
 key.pem
 
 .env
+
+# Redis dump file
+dump.rdb

