@@ -3,6 +3,7 @@ import {
   AlertDialog,
   Button,
   Flex,
+  Link,
   SegmentedControl,
   Spinner,
   Text,
@@ -67,25 +68,39 @@ const Transfer = () => {
   const onSubmit = async (data: Inputs) => {
     setLoading(true);
 
-    const response =
-      method === "unsafe"
-        ? await transactionService.transferUnsafe(
-            data.amount,
-            data.recipient,
-            data.description
-          )
-        : await transactionService.transferNaive(
-            data.amount,
-            data.recipient,
-            data.description
-          );
+    let response;
 
-    const user = await userService.getMe();
+    switch (method) {
+      case "unsafe":
+        response = await transactionService.transferUnsafe(
+          data.amount,
+          data.recipient,
+          data.description
+        );
+        break;
+      case "naive":
+        response = await transactionService.transferNaive(
+          data.amount,
+          data.recipient,
+          data.description
+        );
+        break;
+      case "signed":
+        response = await transactionService.transferSigned(
+          user?.session as string,
+          data.amount,
+          data.recipient,
+          data.description
+        );
+        break;
+    }
 
-    setAmount(response.amount);
+    const _user = await userService.getMe();
+
+    setAmount(response!.amount);
 
     setTimeout(() => {
-      setUser(user);
+      setUser(_user);
 
       setLoading(false);
 
@@ -134,11 +149,25 @@ const Transfer = () => {
                 Unsafe
               </SegmentedControl.Item>
               <SegmentedControl.Item value="naive">Naive</SegmentedControl.Item>
+              <SegmentedControl.Item value="signed">
+                Signed
+              </SegmentedControl.Item>
             </SegmentedControl.Root>
-            <Text as="p" size="1" className="text-xs opacity-70">
-              "Unsafe" method is vulnerable to CSRF attacks. Use "Naive" method
-              to protect against CSRF attacks. Please note that "Naive" method
-              is still vulnerable to MITM attacks.
+            <Text as="p" size="1" className="text-xs opacity-70 min-h-8">
+              {method === "unsafe" &&
+                "Transfer money without any CSRF protection."}
+              {method === "naive" && (
+                <>
+                  Transfer money using a Naive Double Submit Cookie CSRF
+                  protection. Note that this is still vulnerable to{" "}
+                  <Link href="https://owasp.org/www-chapter-london/assets/slides/David_Johansson-Double_Defeat_of_Double-Submit_Cookie.pdf">
+                    MITM/subdomain
+                  </Link>{" "}
+                  takeovers.
+                </>
+              )}
+              {method === "signed" &&
+                "Transfer money using a signed cookie to prevent CSRF attacks."}
             </Text>
 
             <Form.Field name="amount">

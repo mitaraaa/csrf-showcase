@@ -107,6 +107,8 @@ To prevent CSRF attacks, you can implement the following countermeasures:
 
 - Signed Double-Submit Cookie: Include a signed cookie with each form submission that contains a unique value. The server can verify the cookie to prevent CSRF attacks.
 
+  You can try it out by using the `/transfer/signed` endpoint.
+
 - SameSite Cookies: Set the `SameSite` attribute on cookies to `Strict` or `Lax` to prevent CSRF attacks.
 
 ## References

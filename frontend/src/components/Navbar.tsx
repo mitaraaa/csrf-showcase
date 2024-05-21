@@ -9,9 +9,13 @@ const Navbar = () => {
   const { user, setUser } = useAuth();
 
   const logout = async () => {
-    await userService.logout();
-    setUser(undefined);
+    try {
+      await userService.logout();
+    } catch (error) {
+      // Ignore
+    }
 
+    setUser(undefined);
     navigate({ to: "/login" });
   };
 

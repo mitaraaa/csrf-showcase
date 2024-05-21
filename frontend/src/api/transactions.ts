@@ -28,6 +28,19 @@ class TransactionService {
 
     return response.data;
   }
+
+  async transferSigned(
+    session: string,
+    amount: number,
+    recipient: string,
+    description?: string
+  ): Promise<Transaction> {
+    const response = await client.post("/transfer/signed", null, {
+      params: { amount, recipient, description, session },
+    });
+
+    return response.data;
+  }
 }
 
 const transactionService = new TransactionService();

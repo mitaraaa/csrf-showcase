@@ -6,4 +6,6 @@ type User = {
 
   transactions_count: number;
   transactions: Transaction[];
+
+  session: string;
 };

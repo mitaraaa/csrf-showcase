@@ -16,3 +16,7 @@ class UserRead(BaseModel):
 
     transactions_count: int
     transactions: list[TransactionRead]
+
+
+class UserReadWithSession(UserRead):
+    session: str
