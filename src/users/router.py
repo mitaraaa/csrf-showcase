@@ -28,7 +28,7 @@ def set_cookie(response: Response, user: User, cookie: str):
         key="session",
         value=cookie,
         max_age=settings.CACHE_EXPIRE_SECONDS,
-        samesite="none",
+        samesite="strict",
         secure=True,
     )
 
